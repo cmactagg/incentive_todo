@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import CheckList from './CheckList.js';
+import CheckListsBoard from './CheckListsBoard.js';
 
 class App extends Component {
   render() {
@@ -11,8 +12,9 @@ class App extends Component {
           
         </div>
         <div>
-          <CheckList/>
+          <CheckListsBoard/>
         </div>
+        
       </div>
     );
   }

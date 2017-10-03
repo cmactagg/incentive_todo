@@ -1,21 +1,21 @@
 import React, { Component } from "react";
 import Sortable from "sortablejs";
+import './CheckList.css';
 
 
 class CheckList extends Component {
   
   
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
+    console.log(props);
 
     this.newItemText = "";
 
     this.state = {
 
-      list: [
-        { id: 1, text: "get groceries", isChecked: true },
-        { id: 2, text: "walk dog", isChecked: false }
-      ]
+      list: props.checkList
     };
 
     this.handleCheckboxOnChange = this.handleCheckboxOnChange.bind(this);
@@ -24,8 +24,11 @@ class CheckList extends Component {
   }
 
   componentDidMount() {
-    var el = document.getElementById('items');
-    var sortable = Sortable.create(el);
+    var elements = document.getElementsByClassName('CheckList-items');
+    for (var element of elements) {
+      Sortable.create(element);
+  }
+    
   }
 
 
@@ -59,12 +62,12 @@ class CheckList extends Component {
 
   renderListItem(listItemObj) {
     return (
-      <div key={listItemObj.id}>
+      <div key={listItemObj.id}  className="CheckList-item">
           <div>
             <input type="checkbox" id={listItemObj.id} defaultChecked={listItemObj.isChecked} onChange={this.handleCheckboxOnChange}/>
+            {listItemObj.text}
             </div>
-        <div>{listItemObj.text}</div>
-        <div>{listItemObj.isChecked}</div>
+        
       </div>
     );
   }
@@ -75,8 +78,8 @@ class CheckList extends Component {
     });
 
     return (
-      <div>
-      <div id="items">
+      <div >
+      <div className="CheckList-items">
         {listItemsRendered}
       </div>
       <div><input type="text" onChange={this.handleAddTextBoxChange} onBlur={this.handleAddTextBoxBlur}/></div>

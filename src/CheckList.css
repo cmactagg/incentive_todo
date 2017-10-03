@@ -1,0 +1,7 @@
+.CheckList-item {
+  background-color: #12C447;  
+  
+  color: white;
+  overflow: hidden;
+  white-space: nowrap;
+}
