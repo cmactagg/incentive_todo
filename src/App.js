@@ -6,17 +6,22 @@ import "./App.css";
 import CheckList from "./CheckList.js";
 import CheckListsBoard from "./CheckListsBoard.js";
 import AuthenticationComponent from "./AuthenticationComponent.js";
-import AuthenticationService from "./AuthenticationService";
+import AuthenticationService from "./AuthenticationService.js";
+import CheckListDataService from "./CheckListDataService.js";
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.authenticationService = new AuthenticationService();
+    this.checkListDataService = new CheckListDataService();
     this.handleSignIn = this.handleSignIn.bind(this);
     this.handleSignOut = this.handleSignOut.bind(this);
     this.handleAuthenticatedStatusChange = this.handleAuthenticatedStatusChange.bind(
       this
     );
+    this.handleCreateFile = this.handleCreateFile.bind(this);
+    this.handleReadFromFile = this.handleReadFromFile.bind(this);
+    this.handleWriteToFile = this.handleWriteToFile.bind(this);
 
     this.state = { isSignedIn: false };
   }
@@ -41,7 +46,7 @@ class App extends Component {
     this.setState({ isSignedIn: isSignedIn });
 
     if (isSignedIn) {
-      this.listFiles();
+      //this.checkListDataService.listFiles();
     }
   }
 
@@ -53,71 +58,20 @@ class App extends Component {
     this.authenticationService.signOut();
   }
 
-  /**
-   * Print files.
-   */
-  listFiles() {
-    gapi.client.drive.files
-      .list({
-        pageSize: 10,
-        fields: "nextPageToken, files(id, name)"
-      })
-      .then(
-        function(response) {
-          console.log(response);
-        }
-
-      );
+  handleCreateFile(){
+    this.checkListDataService.createFile();
   }
 
-  createFile() {
-    
-    gapi.client.drive.files.create({    
-      "name":"new file2",
-      "mimeType":"application/vnd.google-apps.spreadsheet",
-      "parents":["0B2uYm3uzW_F-QkdJZHcyNW95RWc"]
-    })
-    
-    .then(function(response) {
-      console.log(response);
-    });
+  handleWriteToFile(){
+    this.checkListDataService.writeToFile();
   }
 
-  writeToFile(){
-    var values = [
-      [
-        "something", "to", "save on row 1xxxx"
-      ],
-      [
-        "something", "to", "save on row 2"
-      ]
-    ];
-    var body = {
-      values: values
-    };
-    gapi.client.sheets.spreadsheets.values.update({
-       spreadsheetId: "1WppNAUviyrzD2dMY71ikv1qb_WDpAgOdnrh-CE2t4Kg",
-       range: "A1",
-       valueInputOption: "RAW",
-       resource: body
-    })    
-    .then(function(response) {
-      console.log(response);
-    });
+  handleReadFromFile(){
+    //this.checkListDataService.readFromFile();
+    this.checkListDataService.init(()=>console.log("I GOT THE FILE!!"));
   }
 
-  readFromFile(){
-
-    gapi.client.sheets.spreadsheets.values.get({
-       //spreadsheetId: "1cALfwE6VHfie7qU5xeMZaK9wN_s8qNHVlxKT8zffL-w",
-       spreadsheetId: "1WppNAUviyrzD2dMY71ikv1qb_WDpAgOdnrh-CE2t4Kg",
-       range: "A1:D6"
-    })    
-    .then(function(response) {
-      console.log(response);
-      
-    });
-  }
+ 
 
   render() {
     return (
@@ -131,9 +85,9 @@ class App extends Component {
         </div>
         <div>
           <CheckListsBoard />
-          <button onClick={this.createFile}>Create</button>
-          <button onClick={this.writeToFile}>Write</button>
-          <button onClick={this.readFromFile}>Read</button>
+          <button onClick={this.handleCreateFile}>Create</button>
+          <button onClick={this.handleWriteToFile}>Write</button>
+          <button onClick={this.handleReadFromFile}>Read</button>
           <div id="content" />
         </div>
       </div>
