@@ -9,12 +9,13 @@ class AuthenticationService {
 
     // Array of API discovery doc URLs for APIs used by the quickstart
     this.DISCOVERY_DOCS = [
-      "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"
+      "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest",
+      "https://sheets.googleapis.com/$discovery/rest?version=v4",
     ];
 
     // Authorization scopes required by the API; multiple scopes can be
     // included, separated by spaces.
-    this.SCOPES = "https://www.googleapis.com/auth/drive.metadata.readonly";
+    this.SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/spreadsheets.readonly https://www.googleapis.com/auth/drive.metadata.readonly https://www.googleapis.com/auth/drive.file';
   }
 
   /**

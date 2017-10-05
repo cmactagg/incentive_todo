@@ -40,7 +40,7 @@ class App extends Component {
   handleAuthenticatedStatusChange(isSignedIn) {
     this.setState({ isSignedIn: isSignedIn });
 
-    if(isSignedIn){
+    if (isSignedIn) {
       this.listFiles();
     }
   }
@@ -53,18 +53,6 @@ class App extends Component {
     this.authenticationService.signOut();
   }
 
-    /**
-   * Append a pre element to the body containing the given message
-   * as its text node. Used to display the results of the API call.
-   *
-   * @param {string} message Text to be placed in pre element.
-   */
-  appendPre(message) {
-    var pre = document.getElementById("content");
-    var textContent = document.createTextNode(message + "\n");
-    pre.appendChild(textContent);
-  }
-
   /**
    * Print files.
    */
@@ -74,18 +62,61 @@ class App extends Component {
         pageSize: 10,
         fields: "nextPageToken, files(id, name)"
       })
-      .then(function(response) {
-        this.appendPre("Files:");
-        var files = response.result.files;
-        if (files && files.length > 0) {
-          for (var i = 0; i < files.length; i++) {
-            var file = files[i];
-            this.appendPre(file.name + " (" + file.id + ")");
-          }
-        } else {
-          this.appendPre("No files found.");
+      .then(
+        function(response) {
+          console.log(response);
         }
-      }.bind(this));
+
+      );
+  }
+
+  createFile() {
+    
+    gapi.client.drive.files.create({    
+      "name":"new file2",
+      "mimeType":"application/vnd.google-apps.spreadsheet",
+      "parents":["0B2uYm3uzW_F-QkdJZHcyNW95RWc"]
+    })
+    
+    .then(function(response) {
+      console.log(response);
+    });
+  }
+
+  writeToFile(){
+    var values = [
+      [
+        "something", "to", "save on row 1xxxx"
+      ],
+      [
+        "something", "to", "save on row 2"
+      ]
+    ];
+    var body = {
+      values: values
+    };
+    gapi.client.sheets.spreadsheets.values.update({
+       spreadsheetId: "1WppNAUviyrzD2dMY71ikv1qb_WDpAgOdnrh-CE2t4Kg",
+       range: "A1",
+       valueInputOption: "RAW",
+       resource: body
+    })    
+    .then(function(response) {
+      console.log(response);
+    });
+  }
+
+  readFromFile(){
+
+    gapi.client.sheets.spreadsheets.values.get({
+       //spreadsheetId: "1cALfwE6VHfie7qU5xeMZaK9wN_s8qNHVlxKT8zffL-w",
+       spreadsheetId: "1WppNAUviyrzD2dMY71ikv1qb_WDpAgOdnrh-CE2t4Kg",
+       range: "A1:D6"
+    })    
+    .then(function(response) {
+      console.log(response);
+      
+    });
   }
 
   render() {
@@ -100,7 +131,10 @@ class App extends Component {
         </div>
         <div>
           <CheckListsBoard />
-          <div id="content"></div>
+          <button onClick={this.createFile}>Create</button>
+          <button onClick={this.writeToFile}>Write</button>
+          <button onClick={this.readFromFile}>Read</button>
+          <div id="content" />
         </div>
       </div>
     );
