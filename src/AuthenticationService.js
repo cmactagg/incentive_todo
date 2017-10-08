@@ -22,6 +22,7 @@ class AuthenticationService {
    *  On load, called to load the auth2 library and API client library.
    */
   init(callback) {
+    return new Promise((resolve, reject) => {
     gapi.load(
       "client:auth2",
       function() {
@@ -38,9 +39,11 @@ class AuthenticationService {
 
             // Handle the initial sign-in state.
             callback(gapi.auth2.getAuthInstance().isSignedIn.get());
+            resolve();
           });
       }.bind(this)
     );
+  });
   }
 
   /**

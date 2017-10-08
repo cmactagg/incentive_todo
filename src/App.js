@@ -23,7 +23,7 @@ class App extends Component {
     this.handleReadFromFile = this.handleReadFromFile.bind(this);
     this.handleWriteToFile = this.handleWriteToFile.bind(this);
 
-    this.state = { isSignedIn: false };
+    this.state = { isSignedIn: false, checkListsValues:[] };
   }
 
   loadScripts() {
@@ -32,7 +32,19 @@ class App extends Component {
 
     script.onload = () => {
       console.log("script loaded!!!!!");
-      this.authenticationService.init(this.handleAuthenticatedStatusChange);
+      this.authenticationService.init(this.handleAuthenticatedStatusChange)
+      .then(()=>{
+        return this.checkListDataService.init(()=>{console.log("got the data file")});
+      }, null)
+      .then(
+        ()=>{
+          this.checkListDataService.readFromFile((checkListsValues)=>{
+            this.setState({checkListsValues: checkListsValues});
+          });
+        }, 
+      
+      null
+    );
     };
 
     document.body.appendChild(script);
@@ -63,7 +75,7 @@ class App extends Component {
   }
 
   handleWriteToFile(){
-    this.checkListDataService.writeToFile();
+    this.checkListDataService.writeToFile(this.state.checkListsValues, ()=>{});
   }
 
   handleReadFromFile(){
@@ -84,7 +96,7 @@ class App extends Component {
           />
         </div>
         <div>
-          <CheckListsBoard />
+          <CheckListsBoard checkListsValues={this.state.checkListsValues}/>
           <button onClick={this.handleCreateFile}>Create</button>
           <button onClick={this.handleWriteToFile}>Write</button>
           <button onClick={this.handleReadFromFile}>Read</button>
