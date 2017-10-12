@@ -10,13 +10,31 @@ class CheckList extends Component {
 
     this.handleAddTextBoxChange = this.handleAddTextBoxChange.bind(this);
     this.handleAddTextBoxBlur = this.handleAddTextBoxBlur.bind(this);
+    this.handleOnSort = this.handleOnSort.bind(this);
   }
 
   componentDidMount() {
-    var elements = document.getElementsByClassName("CheckList-items");
-    for (var element of elements) {
-      Sortable.create(element);
+    var clHeaderObj = this.props.checkList[0];
+
+    var element = document.getElementById("CheckList-items-" + clHeaderObj.id);
+    //for (var element of elements) {
+    Sortable.create(element, { onSort: this.handleOnSort });
+    //}
+  }
+
+  handleOnSort(event) {
+    var list = this.props.checkList;
+    var newIndex = event.newIndex + 1;
+    var oldIndex = event.oldIndex + 1;
+    var objectToMove = list.splice(oldIndex, 1)[0];
+
+    if (newIndex > oldIndex) {
+      oldIndex--;
     }
+
+    list.splice(newIndex, 0, objectToMove);
+    console.log(newIndex + "  " + oldIndex);
+    this.props.onChange(list);
   }
 
   handleAddTextBoxBlur(event) {
@@ -52,17 +70,19 @@ class CheckList extends Component {
 
   render() {
     var clHeaderObj = this.props.checkList[0];
+    const clHeaderObjElementId = "CheckList-items-" + clHeaderObj.id;
     var checklist = this.props.checkList.slice(1);
 
     const listItemsRendered = checklist.map(listItemObj => {
-
       return this.renderListItem(listItemObj);
     });
 
     return (
       <div>
         <div>{clHeaderObj.text}</div>
-        <div className="CheckList-items">{listItemsRendered}</div>
+        <div id={clHeaderObjElementId} className="CheckList-items">
+          {listItemsRendered}
+        </div>
         <div>
           <input
             type="text"
