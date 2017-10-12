@@ -8,11 +8,6 @@ class CheckList extends Component {
 
     this.newItemText = "";
 
-    this.state = {
-      list: props.checkList
-    };
-
-    //this.handleCheckboxOnChange = this.handleCheckboxOnChange.bind(this);
     this.handleAddTextBoxChange = this.handleAddTextBoxChange.bind(this);
     this.handleAddTextBoxBlur = this.handleAddTextBoxBlur.bind(this);
   }
@@ -25,11 +20,15 @@ class CheckList extends Component {
   }
 
   handleAddTextBoxBlur(event) {
-    var list = this.state.list;
-    list.push({ id: Date.now(), text: event.target.value, points:0, isChecked: false });
-    this.setState({ list: list });
+    var list = this.props.checkList;
+    list.push({
+      id: Date.now(),
+      text: event.target.value,
+      points: 0,
+      isChecked: false
+    });
     event.target.value = "";
-    this.props.onChange();
+    this.props.onChange(list);
   }
 
   handleAddTextBoxChange(event) {
@@ -56,7 +55,6 @@ class CheckList extends Component {
     var checklist = this.props.checkList.slice(1);
 
     const listItemsRendered = checklist.map(listItemObj => {
-      //var listItemObj = JSON.parse(listItem);
 
       return this.renderListItem(listItemObj);
     });
