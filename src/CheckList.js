@@ -29,6 +29,7 @@ class CheckList extends Component {
     list.push({ id: Date.now(), text: event.target.value, points:0, isChecked: false });
     this.setState({ list: list });
     event.target.value = "";
+    this.props.onChange();
   }
 
   handleAddTextBoxChange(event) {

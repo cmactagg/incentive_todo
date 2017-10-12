@@ -9,11 +9,24 @@ import AuthenticationComponent from "./AuthenticationComponent.js";
 import AuthenticationService from "./AuthenticationService.js";
 import CheckListDataService from "./CheckListDataService.js";
 
+//import AutoSyncService from "./AutoSyncService.js";
+
 class App extends Component {
   constructor(props) {
     super(props);
     this.authenticationService = new AuthenticationService();
     this.checkListDataService = new CheckListDataService();
+    // this.autoSyncService = new AutoSyncService(10000, 
+    //   this.checkListDataService.readFromFile, 
+    //   this.checkListDataService.writeToFile, 
+    //   function(oldData, newData){return newData;},
+    //   function(data){
+    //     console.log("done data merge");
+    //     this.setState({checkListsValues: data});
+    //   }.bind(this)
+    // );
+
+
     this.handleSignIn = this.handleSignIn.bind(this);
     this.handleSignOut = this.handleSignOut.bind(this);
     this.handleAuthenticatedStatusChange = this.handleAuthenticatedStatusChange.bind(
@@ -22,7 +35,9 @@ class App extends Component {
     this.handleCreateFile = this.handleCreateFile.bind(this);
     this.handleReadFromFile = this.handleReadFromFile.bind(this);
     this.handleWriteToFile = this.handleWriteToFile.bind(this);
+    this.syncToCloud = this.syncToCloud.bind(this);
 
+    this.syncTimeout = undefined;
     this.state = { isSignedIn: false, checkListsValues:[] };
   }
 
@@ -31,16 +46,15 @@ class App extends Component {
     script.src = "https://apis.google.com/js/client.js";
 
     script.onload = () => {
-      console.log("script loaded!!!!!");
       this.authenticationService.init(this.handleAuthenticatedStatusChange)
       .then(()=>{
-        return this.checkListDataService.init(()=>{console.log("got the data file")});
+        return this.checkListDataService.init().then((fileId)=>{console.log("got the data file" + fileId)}, undefined);
       }, null)
       .then(
         ()=>{
-          this.checkListDataService.readFromFile((checkListsValues)=>{
+          this.checkListDataService.readFromFile().then((checkListsValues)=>{
             this.setState({checkListsValues: checkListsValues});
-          });
+          }, undefined);
         }, 
       
       null
@@ -75,12 +89,24 @@ class App extends Component {
   }
 
   handleWriteToFile(){
-    this.checkListDataService.writeToFile(this.state.checkListsValues, ()=>{});
+    //this.checkListDataService.writeToFile(this.state.checkListsValues);
+    //this.autoSyncService.onLocalDataChanged();
+    this.syncToCloud();
   }
 
   handleReadFromFile(){
     //this.checkListDataService.readFromFile();
     this.checkListDataService.init(()=>console.log("I GOT THE FILE!!"));
+  }
+
+  syncToCloud(){
+    if(this.syncTimeout !== undefined){
+      clearTimeout(this.syncTimeout);
+    }    
+    this.syncTimeout = setTimeout(()=>{
+      this.checkListDataService.writeToFile(this.state.checkListsValues);
+    }, 5000);
+    
   }
 
  
@@ -96,7 +122,7 @@ class App extends Component {
           />
         </div>
         <div>
-          <CheckListsBoard checkListsValues={this.state.checkListsValues}/>
+          <CheckListsBoard checkListsValues={this.state.checkListsValues} onChange={this.syncToCloud}/>
           <button onClick={this.handleCreateFile}>Create</button>
           <button onClick={this.handleWriteToFile}>Write</button>
           <button onClick={this.handleReadFromFile}>Read</button>

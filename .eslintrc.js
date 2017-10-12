@@ -26,7 +26,7 @@ module.exports = {
         "array-element-newline": "off",
         "arrow-body-style": "off",
         "arrow-parens": [
-            "error",
+            "off",
             "as-needed"
         ],
         "arrow-spacing": "off",
@@ -110,7 +110,7 @@ module.exports = {
         "max-len": "off",
         "max-lines": "error",
         "max-nested-callbacks": "error",
-        "max-params": "error",
+        "max-params": "off",
         "max-statements": "error",
         "max-statements-per-line": "error",
         "new-cap": "error",
@@ -235,7 +235,7 @@ module.exports = {
         "prefer-destructuring": "off",
         "prefer-numeric-literals": "error",
         "prefer-promise-reject-errors": "error",
-        "prefer-reflect": "error",
+        "prefer-reflect": "off",
         "prefer-rest-params": "error",
         "prefer-spread": "error",
         "prefer-template": "off",

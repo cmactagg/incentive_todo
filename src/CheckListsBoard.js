@@ -34,7 +34,7 @@ class CheckListsBoard extends Component {
     var clKey = 0;
     var checkLists = this.props.checkListsValues.map(checkList => {       
       
-      return <div key={clKey++}><CheckList checkList={checkList}/></div>
+      return <div key={clKey++}><CheckList checkList={checkList} onChange={this.props.onChange}/></div>
     });
     
     return (

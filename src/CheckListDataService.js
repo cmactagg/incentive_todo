@@ -4,162 +4,191 @@ class CheckListDataService {
   constructor() {
     this.dataFileName = "incentive_todo";
     this.dataFileFolder = "Incentive Todo";
+    this.readFromFile = this.readFromFile.bind(this);
 
     this.dataFileId = undefined;
   }
 
-  init(callback){
-    return new Promise((resolve, reject)=>{
+  init() {
     //find data file
-    this.findDataFile(function(fileId){
-      if(fileId === undefined){
-        //this.createFolder();
-        this.createFile(function(fileId){
-          this.dataFileId = fileId;
-          console.log("file id" + this.dataFileId);
-          callback();
-        }.bind(this));
-      }else{
+    return this.findDataFile()
+      .then(
+        function(fileId) {
+          let ret = undefined;
+          if (fileId !== undefined) {
+            ret = fileId;
+          } else {
+            return this.findFolder().then(folderId => {
+              var returnResult = undefined;
+              if (folderId !== undefined) {
+                returnResult = this.createFile(folderId).then(fileId => {
+                  return fileId;
+                });
+              } else {
+                returnResult = this.createFolder()
+                  .then(this.createFile)
+                  .then(fileId => {
+                    return fileId;
+                  });
+              }
+              ret = returnResult;
+            });
+          }
+
+          return ret;
+        }.bind(this),
+        undefined
+      )
+      .then(fileId => {
         this.dataFileId = fileId;
-        console.log("file id" + this.dataFileId);
-        callback();
-      }
-      resolve();
-    }.bind(this));
-  });
+
+        return fileId;
+      });
   }
 
-  findDataFile(callback) {
-    gapi.client.drive.files
+  findDataFile() {
+    return gapi.client.drive.files
       .list({
         pageSize: 10,
         fields: "nextPageToken, files(id, name, properties)",
-        q: "name = '" + this.dataFileName + "' and mimeType = 'application/vnd.google-apps.spreadsheet' and trashed = false"
+        q:
+          "name = '" +
+          this.dataFileName +
+          "' and mimeType = 'application/vnd.google-apps.spreadsheet' and trashed = false"
       })
-      .then(function(response) {
-        var fileId = undefined;
-        for(var i = 0; i < response.result.files.length; i++){
-          var file = response.result.files[i]          
-          if(file.properties && file.properties.incentive_todo === "true"){
-            fileId = file.id;
+      .then(
+        function(response) {
+          var fileId = undefined;
+          for (var i = 0; i < response.result.files.length; i++) {
+            var file = response.result.files[i];
+            if (file.properties && file.properties.incentive_todo === "true") {
+              fileId = file.id;
+            }
           }
-        }
-        if(fileId === undefined){
-          this.findFolder(callback);
-        } else{
-          callback(fileId);
-        }
-      }.bind(this));
+
+          return fileId;
+          // if(fileId === undefined){
+          //   this.findFolder(callback);
+          // } else{
+          //   callback(fileId);
+          // }
+        }.bind(this)
+      );
   }
 
-  findFolder(callback) {
-    gapi.client.drive.files
+  findFolder() {
+    return gapi.client.drive.files
       .list({
         pageSize: 10,
         fields: "nextPageToken, files(id, name, properties)",
-        q: "name = '" + this.dataFileFolder + "' and mimeType = 'application/vnd.google-apps.folder' and trashed = false"
+        q:
+          "name = '" +
+          this.dataFileFolder +
+          "' and mimeType = 'application/vnd.google-apps.folder' and trashed = false"
       })
-      .then(function(response) {
-        var folderId = undefined;
-        for(var i = 0; i < response.result.files.length; i++){
-          var file = response.result.files[i]          
-          if(file.properties && file.properties.incentive_todo === "true"){
-            folderId = file.id;
+      .then(
+        function(response) {
+          var folderId = undefined;
+          for (var i = 0; i < response.result.files.length; i++) {
+            var file = response.result.files[i];
+            if (file.properties && file.properties.incentive_todo === "true") {
+              folderId = file.id;
+            }
           }
-        }
-        if(folderId === undefined){
-          this.createFolder(callback);
-        } else{
-          this.createFile(folderId, callback);
-        }
-      }.bind(this));
+
+          return folderId;
+          // if(folderId === undefined){
+          //   this.createFolder(callback);
+          // } else{
+          //   this.createFile(folderId, callback);
+          // }
+        }.bind(this)
+      );
   }
 
-  createFolder(callback) {
-    gapi.client.drive.files
+  createFolder() {
+    return gapi.client.drive.files
       .create({
         name: this.dataFileFolder,
         mimeType: "application/vnd.google-apps.folder",
         parents: ["root"],
-        properties: {"incentive_todo": "true"}
+        properties: { incentive_todo: "true" }
       })
-      .then(function(response) {
-        this.createFile(response.result.id, callback);
-      }.bind(this));
+      .then(
+        function(response) {
+          return response.result.id;
+        }.bind(this)
+      );
   }
 
-  createFile(folderId, callback) {
-    gapi.client.drive.files
+  createFile(folderId) {
+    return gapi.client.drive.files
       .create({
         name: this.dataFileName,
         mimeType: "application/vnd.google-apps.spreadsheet",
         parents: [folderId],
-        properties: {"incentive_todo": "true"}
+        properties: { incentive_todo: "true" }
       })
-      .then(function(response) {
-        callback(response.result.id);
-      });
+      .then(
+        function(response) {
+          return response.result.id;
+        }.bind(this)
+      );
   }
 
-  writeToFile(checkListsValues, callback) {
+  writeToFile(checkListsValues) {
     // var values = [
     //   ["something", "to", "save on row 1xxxx"],
     //   ["something", "to", "save on row 2"]
     // ];
-    var checkListsValuesJson = checkListsValues.map(
-      list=>{
-        var x = list.map(
-          obj=>{
-            var y = JSON.stringify(obj);
+    var checkListsValuesJson = checkListsValues.map(list => {
+      var x = list.map(obj => {
+        var y = JSON.stringify(obj);
 
-            return y;
-          }
-        );
+        return y;
+      });
 
-        return x
-      }
-    );
+      return x;
+    });
 
     var body = {
       values: checkListsValuesJson
     };
-    gapi.client.sheets.spreadsheets.values
+
+    return gapi.client.sheets.spreadsheets.values
       .update({
         spreadsheetId: this.dataFileId,
         range: "A1",
         valueInputOption: "RAW",
         resource: body
       })
-      .then(function(response) {
+      .then((response) => {
         console.log(response);
-        callback();
       });
   }
 
-  readFromFile(callback) {
-    gapi.client.sheets.spreadsheets.values
+  readFromFile() {
+    return gapi.client.sheets.spreadsheets.values
       .get({
-        //spreadsheetId: "1cALfwE6VHfie7qU5xeMZaK9wN_s8qNHVlxKT8zffL-w",
         spreadsheetId: this.dataFileId,
         range: "Sheet1"
       })
-      .then(function(response) {
+      .then((response) => {
+        let objArray = [[]];
         var listJsonArray = response.result.values;
-        var objArray = listJsonArray.map(
-          list=> {
-          var listObj = list.map(
-            val => {
-              var x = JSON.parse(val)
+        if (listJsonArray !== undefined) {
+          objArray = listJsonArray.map(list => {
+            var listObj = list.map(val => {
+              var x = JSON.parse(val);
 
               return x;
-            }
-        )
+            });
 
-        return listObj;
-      }
-      );
+            return listObj;
+          });
+        }
 
-        callback(objArray);
+        return objArray;
       });
   }
 }
