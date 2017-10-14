@@ -1,6 +1,8 @@
 import React, { Component } from "react"; // eslint-disable-line no-unused-vars
+import TextInputComponent from "./TextInputComponent.js";
 import Sortable from "sortablejs";
 import "./CheckList.css";
+
 
 class CheckList extends Component {
   constructor(props) {
@@ -53,16 +55,17 @@ class CheckList extends Component {
     this.newItemText = event.target.value;
   }
 
+
   renderListItem(listItemObj) {
     return (
       <div key={listItemObj.id} className="CheckList-item">
         <div>
           <input
             type="checkbox"
-            id={listItemObj.id}
+            id={"checkbox-" + listItemObj.id}
             defaultChecked={listItemObj.isChecked === "true"}
           />
-          {listItemObj.text}
+          <TextInputComponent text={listItemObj.text}/>
         </div>
       </div>
     );
