@@ -8,14 +8,13 @@ class CheckListItemComponent extends Component {
     this.handleOnTextBlur = this.handleOnTextBlur.bind(this);
     this.handleOnCheckboxChange = this.handleOnCheckboxChange.bind(this);
 
-    this.state = { obj: JSON.parse(JSON.stringify(this.props.valueObj))  };
+    this.state = { obj: JSON.parse(JSON.stringify(this.props.valueObj)) };
   }
 
   handleOnTextChange(event) {
     let obj = this.state.obj;
     obj.text = event.target.value;
     this.setState({ obj: obj });
-    
   }
 
   handleOnCheckboxChange(event) {
@@ -36,7 +35,7 @@ class CheckListItemComponent extends Component {
       <div>
         <input
           type="checkbox"
-          defaultChecked={this.state.obj.isChecked === "true"}
+          checked={this.state.obj.isChecked === true}
           onChange={this.handleOnCheckboxChange}
         />
         <input

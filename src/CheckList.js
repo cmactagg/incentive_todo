@@ -3,7 +3,6 @@ import CheckListItemComponent from "./CheckListItemComponent.js";
 import Sortable from "sortablejs";
 import "./CheckList.css";
 
-
 class CheckList extends Component {
   constructor(props) {
     super(props);
@@ -17,17 +16,15 @@ class CheckList extends Component {
     this.handleOnHeaderTextChange = this.handleOnHeaderTextChange.bind(this);
     this.handleOnHeaderTextBlur = this.handleOnHeaderTextBlur.bind(this);
 
-    this.state = { clHeaderObj: JSON.parse(JSON.stringify(this.props.checkList[0]))};
-
-    
-  }
-  componentWillReceiveProps(){
-    var x = 0;
+    this.state = {
+      clHeaderObj: JSON.parse(JSON.stringify(this.props.checkList[0]))
+    };
   }
 
   componentDidMount() {
-    
-    var element = document.getElementById("CheckList-items-" + this.state.clHeaderObj.id);
+    var element = document.getElementById(
+      "CheckList-items-" + this.state.clHeaderObj.id
+    );
     //for (var element of elements) {
     Sortable.create(element, { onSort: this.handleOnSort });
     //}
@@ -48,8 +45,7 @@ class CheckList extends Component {
   }
 
   handleAddTextBoxBlur(event) {
-    if(event.target.value.length > 0){
-
+    if (event.target.value.length > 0) {
       var list = this.props.checkList;
       list.push({
         id: Date.now(),
@@ -66,10 +62,10 @@ class CheckList extends Component {
     this.newItemText = event.target.value;
   }
 
-  handleCheckListItemChange(listItemObj){
+  handleCheckListItemChange(listItemObj) {
     var list = this.props.checkList;
-    for(let i = 0; i < list.length; i++){
-      if(listItemObj.id === list[i].id){
+    for (let i = 0; i < list.length; i++) {
+      if (listItemObj.id === list[i].id) {
         list[i] = listItemObj;
       }
     }
@@ -80,11 +76,10 @@ class CheckList extends Component {
     let clHeaderObj = this.state.clHeaderObj;
     clHeaderObj.text = event.target.value;
     this.setState({ clHeaderObj: clHeaderObj });
-    
   }
 
   handleOnHeaderTextBlur(event) {
-    if(this.state.clHeaderObj === this.props.checkList[0]){
+    if (this.state.clHeaderObj === this.props.checkList[0]) {
       console.log("same");
     }
 
@@ -96,13 +91,14 @@ class CheckList extends Component {
     }
   }
 
-
   renderListItem(listItemObj) {
     return (
       <div key={listItemObj.id} className="CheckList-item">
         <div>
-          
-          <CheckListItemComponent valueObj={listItemObj} onChange={this.handleCheckListItemChange}/>
+          <CheckListItemComponent
+            valueObj={listItemObj}
+            onChange={this.handleCheckListItemChange}
+          />
         </div>
       </div>
     );
@@ -119,7 +115,14 @@ class CheckList extends Component {
 
     return (
       <div>
-        <div><input type="text" value={this.state.clHeaderObj.text} onBlur={this.handleOnHeaderTextBlur} onChange={this.handleOnHeaderTextChange}/></div>
+        <div>
+          <input
+            type="text"
+            value={this.state.clHeaderObj.text}
+            onBlur={this.handleOnHeaderTextBlur}
+            onChange={this.handleOnHeaderTextChange}
+          />
+        </div>
         <div id={clHeaderObjElementId} className="CheckList-items">
           {listItemsRendered}
         </div>
