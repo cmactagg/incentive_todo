@@ -9,7 +9,6 @@ class CheckList extends Component {
 
     this.newItemText = "";
 
-    //this.handleCheckListItemChange = this.handleCheckListItemChange.bind(this);
     this.handleAddTextBoxBlur = this.handleAddTextBoxBlur.bind(this);
     this.handleAddTextBoxChange = this.handleAddTextBoxChange.bind(this);
     this.handleOnSort = this.handleOnSort.bind(this);
@@ -31,13 +30,13 @@ class CheckList extends Component {
   }
 
   handleOnSort(event) {
-    this.props.checkListReorder(this.state.clHeaderObj.id, event.oldIndex, event.newIndex);
+    this.props.checkListActions.checkListReorder(this.state.clHeaderObj.id, event.oldIndex, event.newIndex);
   }
 
   handleAddTextBoxBlur(event) {
     if (event.target.value.length > 0) {
     
-      this.props.checkListAddItem(this.state.clHeaderObj.id, event.target.value);
+      this.props.checkListActions.checkListAddItem(this.state.clHeaderObj.id, event.target.value);
       event.target.value = "";
     }
   }
@@ -46,32 +45,18 @@ class CheckList extends Component {
     this.newItemText = event.target.value;
   }
 
-  // handleCheckListItemChange(listItemObj) {
-  //   var list = this.props.checkList;
-  //   for (let i = 0; i < list.length; i++) {
-  //     if (listItemObj.id === list[i].id) {
-  //       list[i] = listItemObj;
-  //     }
-  //   }
-  //   this.props.onChange(list);
-  // }
-
   handleOnHeaderTextChange(event) {
-    let clHeaderObj = this.state.clHeaderObj;
+    const clHeaderObj = this.state.clHeaderObj;
     clHeaderObj.text = event.target.value;
     this.setState({ clHeaderObj: clHeaderObj });
   }
 
   handleOnHeaderTextBlur(event) {
-    if (this.state.clHeaderObj === this.props.checkList[0]) {
-      console.log("same");
-    }
-
     if (this.props.checkList[0].text !== this.state.clHeaderObj.text) {
       var list = this.props.checkList;
       list[0] = this.state.clHeaderObj;
       list[0] = JSON.parse(JSON.stringify(this.state.clHeaderObj));
-      this.props.onChange(list);
+      this.props.checkListActions.checkListHeaderChanged(this.state.clHeaderObj.id, this.state.clHeaderObj);
     }
   }
 
@@ -79,9 +64,8 @@ class CheckList extends Component {
     return (
       <div key={listItemObj.id} className="CheckList-item">
         <div>
-          <CheckListItemComponent {...this.props} checkListId={this.state.clHeaderObj.id}
+          <CheckListItemComponent checkListActions={this.props.checkListActions} checkListId={this.state.clHeaderObj.id}
             valueObj={listItemObj}
-            //onChange={this.handleCheckListItemChange}
           />
         </div>
       </div>
@@ -89,7 +73,7 @@ class CheckList extends Component {
   }
 
   render() {
-    let clHeaderObj = this.props.checkList[0];
+    const clHeaderObj = this.props.checkList[0];
     const clHeaderObjElementId = "CheckList-items-" + clHeaderObj.id;
     var checklist = this.props.checkList.slice(1);
 

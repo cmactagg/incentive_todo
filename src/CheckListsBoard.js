@@ -12,16 +12,12 @@ class CheckListsBoard extends Component {
     this.checkListDataService = new CheckListDataService();
 
     this.handleAddNewList = this.handleAddNewList.bind(this);
-    this.handleOnCheckListChange = this.handleOnCheckListChange.bind(this);
     this.syncToCloud = this.syncToCloud.bind(this);
 
     this.syncTimeout = undefined;
-
-    //this.state = { checkListsValues: [] };
   }
 
   init() {
-    console.log("started board init");
     return this.checkListDataService
       .init()
       .then(fileId => {
@@ -31,7 +27,7 @@ class CheckListsBoard extends Component {
         () => {
           this.checkListDataService.readFromFile().then(checkListsValues => {
             //this.setState({ checkListsValues: checkListsValues });
-            this.props.checkListsInitAll(checkListsValues);
+            this.props.checkListActions.checkListsInitAll(checkListsValues);
           }, undefined);
         },
 
@@ -40,20 +36,7 @@ class CheckListsBoard extends Component {
   }
 
   handleAddNewList(event) {
-    
-    this.props.checkListsAddCheckList("new list");
-  }
-
-  handleOnCheckListChange(checkList) {
-    // let checkListArray = this.props.checkLists;
-    // for (var i = 0; i < checkListArray.length; i++) {
-    //   if (checkListArray[i][0].id === checkList[0].id) {
-    //     checkListArray[i] = checkList;
-    //     break;
-    //   }
-    // }
-    // this.setState({ checkListArray: checkListArray });
-    // this.syncToCloud();
+    this.props.checkListActions.checkListsAddCheckList("new list");
   }
 
   syncToCloud() {
@@ -71,9 +54,9 @@ class CheckListsBoard extends Component {
     var checkLists = this.props.checkLists.map(checkList => {
       return (
         <div key={clKey++}>
-          <CheckList {...this.props}
+          <CheckList
+            checkListActions={this.props.checkListActions}
             checkList={checkList}
-            //onChange={this.handleOnCheckListChange}
           />
         </div>
       );
@@ -84,7 +67,6 @@ class CheckListsBoard extends Component {
         <div>{checkLists}</div>
         <div>
           <button onClick={this.handleAddNewList}>Add</button>
-          <button onClick={this.props.increment.bind(null, 12345)}>Increment</button>
         </div>
       </div>
     );

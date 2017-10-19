@@ -58,12 +58,6 @@ class Main extends Component {
     this.authenticationService.signOut();
   }
 
-  // <div>
-  // <CheckListsBoard
-  //   ref="checkListsBoard"
-  //   checkListsValues={this.state.checkListsValues}
-  // />
-
   render() {
     return (
       <div>
@@ -75,17 +69,15 @@ class Main extends Component {
           />
         </div>
         <div>
-        <CheckListsBoard {...this.props}
+          <CheckListsBoard
+            checkListActions={this.props.checkListActions}
+            checkLists={this.props.checkLists}
             ref="checkListsBoard"
-            checkListsValues={this.state.checkListsValues}
           />
-          </div>
-        
+        </div>
       </div>
     );
   }
 }
 
 export default Main;
-
-

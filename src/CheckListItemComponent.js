@@ -12,22 +12,22 @@ class CheckListItemComponent extends Component {
   }
 
   handleOnTextChange(event) {
-    let obj = this.state.obj;
+    const obj = this.state.obj;
     obj.text = event.target.value;
     this.setState({ obj: obj });
   }
 
   handleOnCheckboxChange(event) {
-    let obj = this.state.obj;
+    const obj = this.state.obj;
     obj.isChecked = event.target.checked;
     //this.setState({ obj: obj });
     //this.props.onChange(this.state.obj);
-    this.props.checkListItemChanged(this.props.checkListId, this.state.obj);
+    this.props.checkListActions.checkListItemChanged(this.props.checkListId, this.state.obj);
   }
 
   handleOnTextBlur(event) {
     if (this.props.valueObj.text !== this.state.obj.text) {
-      this.props.checkListItemChanged(this.props.checkListId, this.state.obj);
+      this.props.checkListActions.checkListItemChanged(this.props.checkListId, this.state.obj);
     }
   }
 
