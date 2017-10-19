@@ -20,13 +20,14 @@ class CheckListItemComponent extends Component {
   handleOnCheckboxChange(event) {
     let obj = this.state.obj;
     obj.isChecked = event.target.checked;
-    this.setState({ obj: obj });
-    this.props.onChange(this.state.obj);
+    //this.setState({ obj: obj });
+    //this.props.onChange(this.state.obj);
+    this.props.checkListItemChanged(this.props.checkListId, this.state.obj);
   }
 
   handleOnTextBlur(event) {
     if (this.props.valueObj.text !== this.state.obj.text) {
-      this.props.onChange(this.state.obj);
+      this.props.checkListItemChanged(this.props.checkListId, this.state.obj);
     }
   }
 

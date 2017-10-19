@@ -17,7 +17,7 @@ class CheckListsBoard extends Component {
 
     this.syncTimeout = undefined;
 
-    this.state = { checkListsValues: [] };
+    //this.state = { checkListsValues: [] };
   }
 
   init() {
@@ -30,7 +30,8 @@ class CheckListsBoard extends Component {
       .then(
         () => {
           this.checkListDataService.readFromFile().then(checkListsValues => {
-            this.setState({ checkListsValues: checkListsValues });
+            //this.setState({ checkListsValues: checkListsValues });
+            this.props.checkListsInitAll(checkListsValues);
           }, undefined);
         },
 
@@ -39,24 +40,20 @@ class CheckListsBoard extends Component {
   }
 
   handleAddNewList(event) {
-    let checkListArray = this.state.checkListsValues;
-    checkListArray.push([
-      { id: Date.now(), text: "new task", isChecked: false }
-    ]);
-    this.setState({ checkListArray: checkListArray });
-    this.syncToCloud();
+    
+    this.props.checkListsAddCheckList("new list");
   }
 
   handleOnCheckListChange(checkList) {
-    let checkListArray = this.state.checkListsValues;
-    for (var i = 0; i < checkListArray.length; i++) {
-      if (checkListArray[i][0].id === checkList[0].id) {
-        checkListArray[i] = checkList;
-        break;
-      }
-    }
-    this.setState({ checkListArray: checkListArray });
-    this.syncToCloud();
+    // let checkListArray = this.props.checkLists;
+    // for (var i = 0; i < checkListArray.length; i++) {
+    //   if (checkListArray[i][0].id === checkList[0].id) {
+    //     checkListArray[i] = checkList;
+    //     break;
+    //   }
+    // }
+    // this.setState({ checkListArray: checkListArray });
+    // this.syncToCloud();
   }
 
   syncToCloud() {
@@ -64,18 +61,19 @@ class CheckListsBoard extends Component {
       clearTimeout(this.syncTimeout);
     }
     this.syncTimeout = setTimeout(() => {
-      this.checkListDataService.writeToFile(this.state.checkListsValues);
+      //this.checkListDataService.writeToFile(this.state.checkListsValues);
+      this.checkListDataService.writeToFile(this.props.checkLists);
     }, 5000);
   }
 
   render() {
     var clKey = 0;
-    var checkLists = this.state.checkListsValues.map(checkList => {
+    var checkLists = this.props.checkLists.map(checkList => {
       return (
         <div key={clKey++}>
-          <CheckList
+          <CheckList {...this.props}
             checkList={checkList}
-            onChange={this.handleOnCheckListChange}
+            //onChange={this.handleOnCheckListChange}
           />
         </div>
       );
@@ -86,6 +84,7 @@ class CheckListsBoard extends Component {
         <div>{checkLists}</div>
         <div>
           <button onClick={this.handleAddNewList}>Add</button>
+          <button onClick={this.props.increment.bind(null, 12345)}>Increment</button>
         </div>
       </div>
     );
