@@ -9,6 +9,12 @@ import rootReducer from "./reducers/index";
 
 import rootSaga from "./sagas/sagas";
 
+import watch from "redux-watch";
+
+import * as checkListActionCreators from "./actions/checkListActionCreators.js";
+
+//import CheckListDataService from "./CheckListDataService.js";
+
 const sagaMiddleware = createSagaMiddleware();
 
 const defaultState = {
@@ -16,14 +22,28 @@ const defaultState = {
   //comments,
 };
 
-const enhancers = compose(
-  window.devToolsExtension ? window.devToolsExtension() : f => f
-);
+let syncTimeout = undefined;
 
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(
   rootReducer,
   defaultState,
-  applyMiddleware(sagaMiddleware)
+  composeEnhancers(applyMiddleware(sagaMiddleware))
+);
+
+//redux watch
+const watchCheckLists = watch(store.getState, "checkLists");
+store.subscribe(
+  watchCheckLists((newVal, oldVal, objectPath) => {
+    if (syncTimeout !== undefined) {
+      clearTimeout(syncTimeout);
+    }
+    if (oldVal.length > 0) {//avoid saving when the state is first initialized
+      syncTimeout = setTimeout(() => {
+        store.dispatch(checkListActionCreators.saveCheckLists());
+      }, 5000);
+    }
+  })
 );
 
 sagaMiddleware.run(rootSaga);

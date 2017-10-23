@@ -1,12 +1,6 @@
 function checkLists(state = [], action) {
   switch (action.type) {
-    case "CHECKLISTS_INIT_ALL":
-      console.log("checklists init all");
-      // const i = action.index;
-      // return [...state.slice(0, i),
-      //   {...state[i], likes: state[i].likes + 1},
-      // ...state.slice(i+1)]
-
+    case "CHECKLISTS_STORE":
       return action.data;
 
     case "CHECKLISTS_ADD_CHECKLIST":
@@ -48,7 +42,7 @@ function checkLists(state = [], action) {
 
       return newState;
 
-      case "CHECKLIST_ITEM_CHANGED":
+    case "CHECKLIST_ITEM_CHANGED":
       console.log("item changed");
       var newState = [...state];
       var checkListIndex = newState.findIndex(cl => {
@@ -58,7 +52,6 @@ function checkLists(state = [], action) {
       var checkListItemIndex = state[checkListIndex].findIndex(cli => {
         return cli.id === action.checkListItem.id;
       });
-      
 
       state[checkListIndex][checkListItemIndex] = action.checkListItem;
 

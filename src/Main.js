@@ -1,10 +1,15 @@
 /* global gapi */
 
 import React, { Component } from "react";
+import { bindActionCreators } from "redux";
 import "./App.css";
 import CheckListsBoard from "./CheckListsBoard.js";
 import AuthenticationComponent from "./AuthenticationComponent.js";
 import AuthenticationService from "./AuthenticationService.js";
+
+import { connect } from "react-redux";
+//import * as actionCreators from "./actions/actionCreators.js";
+import * as mainActionCreators from "./actions/mainActionCreators.js";
 
 class Main extends Component {
   constructor(props) {
@@ -31,7 +36,7 @@ class Main extends Component {
           console.log("auth inited");
         })
         .then(() => {
-          this.refs.checkListsBoard.init();
+          this.props.mainActions.initDataService();
         });
     };
 
@@ -80,4 +85,10 @@ class Main extends Component {
   }
 }
 
-export default Main;
+function mapDispatchToProps(dispatch) {
+  return {
+    mainActions: bindActionCreators(mainActionCreators, dispatch)
+  };
+}
+
+export default connect(null, mapDispatchToProps)(Main);

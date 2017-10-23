@@ -1,21 +1,40 @@
-import {delay} from 'redux-saga';
-import {put, takeEvery, all, call} from 'redux-saga/effects';
+import { delay } from "redux-saga";
+import { put, takeEvery, all, call, select } from "redux-saga/effects";
+import * as checkListActionCreators from "../actions/checkListActionCreators";
+import CheckListDataService from "../CheckListDataService.js";
 
-export function* incrementAsync(){
-  yield call(delay, 1000);  
-  yield put({type: 'INCREMENT'});
+const checkListDataService = new CheckListDataService();
+
+export function* watchInitDataService() {
+  yield takeEvery("DATA_SERVICE_INIT", function*() {
+    yield call(checkListDataService.init.bind(checkListDataService));
+    console.log("done init in saga");
+    const checkLists = yield call(checkListDataService.readFromFile);
+
+    //const checkLists = yield put(checkListActionCreators.fetchAllCheckLists());
+    yield put(checkListActionCreators.storeCheckLists(checkLists));
+  });
 }
 
-export function* watchIncrementAsync(){
-  yield takeEvery('INCREMENT_ASYNC', incrementAsync);
+export function* watchFetchAllCheckLists() {
+  yield takeEvery("CHECKLISTS_FETCH_ALL", function*() {
+    const prom = yield call(checkListDataService.readFromFile);
+    yield call(prom.then);
+  });
 }
 
-export function* helloSaga(){
-  console.log('Hello Sagas!');
+export function* watchSaveCheckLists() {
+  yield takeEvery("CHECKLISTS_SAVE", function*() {
+    const getCheckListsFromState = state => state.checkLists;
+    const checkListsFromState = yield select(getCheckListsFromState);
+    checkListDataService.writeToFile(checkListsFromState);
+  });
 }
 
-export default function* rootSaga(){
-  yield all([helloSaga(), watchIncrementAsync()]);
+export default function* rootSaga() {
+  yield all([
+    watchInitDataService(),
+    watchFetchAllCheckLists(),
+    watchSaveCheckLists()
+  ]);
 }
-
-

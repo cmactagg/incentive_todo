@@ -1,9 +1,21 @@
-export function checkListsInitAll(data) {
+export function fetchAllCheckLists() {
+  console.log("starting fetchallchecklists");
   return {
-    type: "CHECKLISTS_INIT_ALL",
-    data: data
+    type: "CHECKLISTS_FETCH_ALL"
   };
 }
+export function storeCheckLists(checkLists) {
+  return {
+    type: "CHECKLISTS_STORE",
+    data: checkLists
+  };
+}
+export function saveCheckLists() {
+  return {
+    type: "CHECKLISTS_SAVE"
+  };
+}
+
 export function checkListsAddCheckList(text) {
   return {
     type: "CHECKLISTS_ADD_CHECKLIST",

@@ -1,14 +1,15 @@
 import React from 'react';
 import ReactDOM, {render} from 'react-dom';
 import './index.css';
-import App from './App';
+//import App from './App';
+import Main from './Main';
 import CheckListsBoard from "./CheckListsBoard.js";
 import registerServiceWorker from './registerServiceWorker';
 //import {Router, Route, IndexRoute, browserHistory} from 'react-router';
 import {Provider} from 'react-redux';
 import store, {history} from './store';
 
-ReactDOM.render(<Provider store={store}><App store={store}/></Provider>, document.getElementById('root'));
+ReactDOM.render(<Provider store={store}><Main /></Provider>, document.getElementById('root'));
 registerServiceWorker();
 
 // import Single from './components/Single.js';
