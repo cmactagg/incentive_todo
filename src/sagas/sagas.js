@@ -31,10 +31,18 @@ export function* watchSaveCheckLists() {
   });
 }
 
+export function* watchAddSheet() {
+  yield takeEvery("SHEET_ADD", function*() {
+    console.log("saga add sheet");
+    yield checkListDataService.addSheet();
+  });
+}
+
 export default function* rootSaga() {
   yield all([
     watchInitDataService(),
     watchFetchAllCheckLists(),
-    watchSaveCheckLists()
+    watchSaveCheckLists(),
+    watchAddSheet()
   ]);
 }

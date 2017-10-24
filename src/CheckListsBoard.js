@@ -20,14 +20,18 @@ class CheckListsBoard extends Component {
   render() {
     var clKey = 0;
     var checkLists = this.props.checkLists.map(checkList => {
-      return (
-        <div key={clKey++}>
-          <CheckList
-            checkListActions={this.props.checkListActions}
-            checkList={checkList}
-          />
-        </div>
-      );
+      let returnVal = "";
+      if(checkList.length > 0){
+        returnVal =        
+          <div key={clKey++}>
+            <CheckList
+              checkListActions={this.props.checkListActions}
+              checkList={checkList}
+            />
+          </div>
+       
+       return returnVal;
+      }
     });
 
     return (
@@ -35,6 +39,7 @@ class CheckListsBoard extends Component {
         <div>{checkLists}</div>
         <div>
           <button onClick={this.handleAddNewList}>Add</button>
+          <button onClick={this.props.checkListActions.addSheet}>Add Sheet</button>
         </div>
       </div>
     );

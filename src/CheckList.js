@@ -54,7 +54,7 @@ class CheckList extends Component {
   handleOnHeaderTextBlur(event) {
     if (this.props.checkList[0].text !== this.state.clHeaderObj.text) {
       var list = this.props.checkList;
-      list[0] = this.state.clHeaderObj;
+      //list[0] = this.state.clHeaderObj;
       list[0] = JSON.parse(JSON.stringify(this.state.clHeaderObj));
       this.props.checkListActions.checkListHeaderChanged(this.state.clHeaderObj.id, this.state.clHeaderObj);
     }
@@ -73,7 +73,7 @@ class CheckList extends Component {
   }
 
   render() {
-    const clHeaderObj = this.props.checkList[0];
+    const clHeaderObj = this.state.clHeaderObj;
     const clHeaderObjElementId = "CheckList-items-" + clHeaderObj.id;
     var checklist = this.props.checkList.slice(1);
 

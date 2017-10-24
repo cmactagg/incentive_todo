@@ -14,35 +14,37 @@ class CheckListDataService {
     return this.findDataFile()
       .then(
         function(fileId) {
-          let ret = undefined;
+          //let ret = undefined;
           if (fileId !== undefined) {
-            ret = fileId;
+            return Promise.resolve(fileId);
           } else {
             return this.findFolder().then(folderId => {
-              var returnResult = undefined;
+              //var returnResult = undefined;
               if (folderId !== undefined) {
-                returnResult = this.createFile(folderId).then(fileId => {
-                  return fileId;
+                return this.createFile(folderId).then(fileId => {
+                  this.dataFileId = fileId;
+
+                  return Promise.resolve(fileId);
                 });
               } else {
-                returnResult = this.createFolder()
+                return this.createFolder()
                   .then(this.createFile)
                   .then(fileId => {
-                    return fileId;
+                    this.dataFileId = fileId;
+
+                    return Promise.resolve(fileId);
                   });
               }
-              ret = returnResult;
+              //ret = returnResult;
             });
           }
-
-          return ret;
         }.bind(this),
         undefined
       )
       .then(fileId => {
         this.dataFileId = fileId;
 
-        return fileId;
+        return Promise.resolve(fileId);
       });
   }
 
@@ -66,7 +68,7 @@ class CheckListDataService {
             }
           }
 
-          return fileId;
+          return Promise.resolve(fileId);
           // if(fileId === undefined){
           //   this.findFolder(callback);
           // } else{
@@ -96,7 +98,7 @@ class CheckListDataService {
             }
           }
 
-          return folderId;
+          return Promise.resolve(folderId);
           // if(folderId === undefined){
           //   this.createFolder(callback);
           // } else{
@@ -116,7 +118,7 @@ class CheckListDataService {
       })
       .then(
         function(response) {
-          return response.result.id;
+          return Promise.resolve(response.result.id);
         }.bind(this)
       );
   }
@@ -131,9 +133,11 @@ class CheckListDataService {
       })
       .then(
         function(response) {
-          return response.result.id;
+          return Promise.resolve(response.result.id);
         }.bind(this)
-      );
+      )
+      .then(this.renameTodoSheet.bind(this))
+      .then(this.addJournalSheet.bind(this));
   }
 
   writeToFile(checkListsValues) {
@@ -163,7 +167,7 @@ class CheckListDataService {
         valueInputOption: "RAW",
         resource: body
       })
-      .then((response) => {
+      .then(response => {
         console.log(response);
       });
   }
@@ -172,9 +176,9 @@ class CheckListDataService {
     return gapi.client.sheets.spreadsheets.values
       .get({
         spreadsheetId: this.dataFileId,
-        range: "Sheet1"
+        range: "Todos"
       })
-      .then((response) => {
+      .then(response => {
         let objArray = [[]];
         var listJsonArray = response.result.values;
         if (listJsonArray !== undefined) {
@@ -189,7 +193,51 @@ class CheckListDataService {
           });
         }
 
-        return objArray;
+        return Promise.resolve(objArray);
+      });
+  }
+
+  addJournalSheet(fileId) {
+    return gapi.client.sheets.spreadsheets
+      .batchUpdate({
+        spreadsheetId: fileId,//this.dataFileId,
+        resource: {
+          requests: {
+            addSheet: {
+              
+              properties: {
+                title: "Journal"
+              }
+            }
+          }
+        }
+      })
+      .then(response => {
+        console.log(response);
+        return Promise.resolve(fileId);
+      });
+  }
+
+  renameTodoSheet(fileId) {    
+    return gapi.client.sheets.spreadsheets
+      .batchUpdate({
+        spreadsheetId: fileId,//this.dataFileId,
+        
+        resource: {
+          requests: {            
+            updateSheetProperties: {
+              "fields": "title",
+              properties: {    
+                sheetId: "0",            
+                "title": "Todos",
+              }
+            }
+          }
+        }
+      })
+      .then(response => {
+        console.log(response);
+        return Promise.resolve(fileId);
       });
   }
 }

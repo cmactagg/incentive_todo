@@ -55,3 +55,12 @@ export function checkListHeaderChanged(checkListId, checkListItem) {
     checkListItem: checkListItem
   };
 }
+
+
+export function addSheet() {
+  console.log("action add sheet");
+  
+  return {
+    type: "SHEET_ADD"
+  };
+}
