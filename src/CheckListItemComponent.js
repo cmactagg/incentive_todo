@@ -4,30 +4,39 @@ class CheckListItemComponent extends Component {
   constructor(props) {
     super(props);
 
-    this.handleOnTextChange = this.handleOnTextChange.bind(this);
     this.handleOnTextBlur = this.handleOnTextBlur.bind(this);
     this.handleOnCheckboxChange = this.handleOnCheckboxChange.bind(this);
-
-    this.state = { obj: JSON.parse(JSON.stringify(this.props.valueObj)) };
-  }
-
-  handleOnTextChange(event) {
-    const obj = this.state.obj;
-    obj.text = event.target.value;
-    this.setState({ obj: obj });
+    this.handleOnPointsBlur = this.handleOnPointsBlur.bind(this);
   }
 
   handleOnCheckboxChange(event) {
-    const obj = this.state.obj;
+    const obj = this.props.valueObj;
     obj.isChecked = event.target.checked;
-    //this.setState({ obj: obj });
-    //this.props.onChange(this.state.obj);
-    this.props.checkListActions.checkListItemChanged(this.props.checkListId, this.state.obj);
+    this.props.checkListActions.checkListItemChanged(
+      this.props.checkListId,
+      obj
+    );
   }
 
   handleOnTextBlur(event) {
-    if (this.props.valueObj.text !== this.state.obj.text) {
-      this.props.checkListActions.checkListItemChanged(this.props.checkListId, this.state.obj);
+    if (this.props.valueObj.text !== event.target.value) {
+      const obj = this.props.valueObj;
+      obj.text = event.target.value;
+      this.props.checkListActions.checkListItemChanged(
+        this.props.checkListId,
+        obj
+      );
+    }
+  }
+
+  handleOnPointsBlur(event) {
+    if (this.props.valueObj.points !== event.target.value) {
+      const obj = this.props.valueObj;
+      obj.points = event.target.value;
+      this.props.checkListActions.checkListItemChanged(
+        this.props.checkListId,
+        obj
+      );
     }
   }
 
@@ -36,14 +45,18 @@ class CheckListItemComponent extends Component {
       <div>
         <input
           type="checkbox"
-          checked={this.state.obj.isChecked === true}
+          checked={this.props.valueObj.isChecked === true}
           onChange={this.handleOnCheckboxChange}
         />
         <input
           onBlur={this.handleOnTextBlur}
           type="text"
-          value={this.state.obj.text}
-          onChange={this.handleOnTextChange}
+          defaultValue={this.props.valueObj.text}
+        />
+        <input
+          onBlur={this.handleOnPointsBlur}
+          type="number"
+          defaultValue={this.props.valueObj.points}
         />
       </div>
     );

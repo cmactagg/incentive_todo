@@ -27,7 +27,7 @@ export function checkListAddItem(checkListId, text) {
   return {
     type: "CHECKLIST_ADD_ITEM",
     checkListId: checkListId,
-    data: { id: Date.now(), text: text, isChecked: false }
+    data: { id: Date.now(), text: text, points:0, isChecked: false }
   };
 }
 
@@ -56,11 +56,3 @@ export function checkListHeaderChanged(checkListId, checkListItem) {
   };
 }
 
-
-export function addSheet() {
-  console.log("action add sheet");
-  
-  return {
-    type: "SHEET_ADD"
-  };
-}

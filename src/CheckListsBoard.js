@@ -39,7 +39,6 @@ class CheckListsBoard extends Component {
         <div>{checkLists}</div>
         <div>
           <button onClick={this.handleAddNewList}>Add</button>
-          <button onClick={this.props.checkListActions.addSheet}>Add Sheet</button>
         </div>
       </div>
     );
