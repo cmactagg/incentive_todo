@@ -18,8 +18,8 @@ import * as checkListActionCreators from "./actions/checkListActionCreators.js";
 const sagaMiddleware = createSagaMiddleware();
 
 const defaultState = {
-  //posts,
-  //comments,
+  checkLists: [[]],
+  journals: [[]]
 };
 
 let syncTimeout = undefined;

@@ -4,6 +4,7 @@ import React, { Component } from "react";
 import { bindActionCreators } from "redux";
 import "./App.css";
 import CheckListsBoard from "./CheckListsBoard.js";
+import JournalsBoard from "./JournalsBoard.js";
 import AuthenticationComponent from "./AuthenticationComponent.js";
 import AuthenticationService from "./AuthenticationService.js";
 
@@ -78,6 +79,12 @@ class Main extends Component {
             checkListActions={this.props.checkListActions}
             checkLists={this.props.checkLists}
             ref="checkListsBoard"
+          />
+        </div>
+        <div>
+          <JournalsBoard
+            journalActions={this.props.journalActions}
+            journals={this.props.journals}
           />
         </div>
       </div>

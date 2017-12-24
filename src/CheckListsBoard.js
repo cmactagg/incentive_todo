@@ -5,6 +5,7 @@ import CheckList from "./CheckList.js";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as checkListActionCreators from "./actions/checkListActionCreators.js";
+import * as journalActionCreators from "./actions/journalActionCreators.js";
 
 class CheckListsBoard extends Component {
   constructor(props) {
@@ -47,13 +48,15 @@ class CheckListsBoard extends Component {
 
 function mapStateToProps(state) {
   return {
-    checkLists: state.checkLists
+    checkLists: state.checkLists,
+    journals: state.journals
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    checkListActions: bindActionCreators(checkListActionCreators, dispatch)
+    checkListActions: bindActionCreators(checkListActionCreators, dispatch),
+    journalActions: bindActionCreators(journalActionCreators, dispatch)
   };
 }
 

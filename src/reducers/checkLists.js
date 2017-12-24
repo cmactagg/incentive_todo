@@ -16,7 +16,7 @@ function checkLists(state = [], action) {
       var checkListIndex = newState.findIndex(cl => {
         return cl[0].id === action.checkListId;
       });
-      state[checkListIndex].push(action.data);
+      newState[checkListIndex].push(action.data);
 
       return newState;
 
@@ -42,7 +42,7 @@ function checkLists(state = [], action) {
 
       return newState;
 
-    case "CHECKLIST_ITEM_CHANGED":
+    case "CHECKLIST_ITEM_CHANGED_REDUCE":
       console.log("item changed");
       var newState = [...state];
       var checkListIndex = newState.findIndex(cl => {

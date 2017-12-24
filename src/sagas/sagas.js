@@ -1,9 +1,12 @@
 import { delay } from "redux-saga";
 import { put, takeEvery, all, call, select } from "redux-saga/effects";
 import * as checkListActionCreators from "../actions/checkListActionCreators";
+import * as journalActionCreators from "../actions/journalActionCreators";
 import CheckListDataService from "../CheckListDataService.js";
 
 const checkListDataService = new CheckListDataService();
+
+const getCheckListsFromState = state => state.checkLists;
 
 export function* watchInitDataService() {
   yield takeEvery("DATA_SERVICE_INIT", function*() {
@@ -31,10 +34,54 @@ export function* watchSaveCheckLists() {
   });
 }
 
+export function* watchChangedCheckListItem() {
+  yield takeEvery("CHECKLIST_ITEM_CHANGED", function*(action) {
+    const checkListItemObjOld = getCheckListItemFromState(action.checkListId, action.checkListItem.id, yield select(getCheckListsFromState));
+    if(checkListItemObjOld.isChecked !== action.checkListItem.isChecked && action.checkListItem.isChecked === true){
+      console.log("adding item to journal");
+      yield put(journalActionCreators.journalAddEntry("General", action.checkListItem.text, action.checkListItem.points));
+    }
+    yield put(checkListActionCreators.checkListItemChangedReduce(action.checkListId, action.checkListItem));
+  });
+
+  // const getCheckListsFromState = state => state.checkLists;
+  // const checkListsFromState = yield select(getCheckListsFromState);
+}
+
+export function* watchDoSomething() {
+  yield takeEvery("DO_SOMETHING", function*(action) {
+    console.log(action.text);
+    yield;
+  });
+}
+
+
+
+function getCheckListItemFromState(
+  checkListId,
+  checkListItemId,
+  checkListsFromState
+) {
+  var checkListIndex = checkListsFromState.findIndex(cl => {
+    return cl[0].id === checkListId;
+  });
+
+  var checkListItemIndex = checkListsFromState[checkListIndex].findIndex(cli => {
+    return cli.id === checkListItemId;
+  });
+
+  return Object.assign(
+    {},
+    checkListsFromState[checkListIndex][checkListItemIndex]
+  );
+}
+
 export default function* rootSaga() {
   yield all([
     watchInitDataService(),
     watchFetchAllCheckLists(),
-    watchSaveCheckLists()
+    watchSaveCheckLists(),
+    watchDoSomething(),
+    watchChangedCheckListItem()
   ]);
 }

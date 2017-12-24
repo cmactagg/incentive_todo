@@ -10,7 +10,7 @@ class CheckListItemComponent extends Component {
   }
 
   handleOnCheckboxChange(event) {
-    const obj = this.props.valueObj;
+    const obj = Object.assign({}, this.props.valueObj);
     obj.isChecked = event.target.checked;
     this.props.checkListActions.checkListItemChanged(
       this.props.checkListId,
@@ -20,7 +20,7 @@ class CheckListItemComponent extends Component {
 
   handleOnTextBlur(event) {
     if (this.props.valueObj.text !== event.target.value) {
-      const obj = this.props.valueObj;
+      const obj = Object.assign({}, this.props.valueObj);
       obj.text = event.target.value;
       this.props.checkListActions.checkListItemChanged(
         this.props.checkListId,
@@ -31,7 +31,7 @@ class CheckListItemComponent extends Component {
 
   handleOnPointsBlur(event) {
     if (this.props.valueObj.points !== event.target.value) {
-      const obj = this.props.valueObj;
+      const obj = Object.assign({}, this.props.valueObj);
       obj.points = event.target.value;
       this.props.checkListActions.checkListItemChanged(
         this.props.checkListId,

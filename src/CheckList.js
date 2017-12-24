@@ -29,7 +29,7 @@ class CheckList extends Component {
 
   handleAddTextBoxBlur(event) {
     if (event.target.value.length > 0) {
-      const objHeader = this.props.checkList[0];
+      const objHeader = Object.assign({}, this.props.checkList[0]);
       this.props.checkListActions.checkListAddItem(
         objHeader.id,
         event.target.value
@@ -40,10 +40,10 @@ class CheckList extends Component {
 
   handleOnHeaderTextBlur(event) {
     if (this.props.checkList[0].text !== event.target.value) {
-      const objHeader = this.props.checkList[0];
+      const objHeader = Object.assign(this.props.checkList[0]);
       objHeader.text = event.target.value;
       this.props.checkListActions.checkListHeaderChanged(
-        this.props.checkList[0],
+        this.props.checkList[0].id,
         objHeader
       );
     }

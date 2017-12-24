@@ -48,11 +48,27 @@ export function checkListItemChanged(checkListId, checkListItem) {
   };
 }
 
-export function checkListHeaderChanged(checkListId, checkListItem) {
+export function checkListItemChangedReduce(checkListId, checkListItem) {
   return {
-    type: "CHECKLIST_ITEM_CHANGED",
+    type: "CHECKLIST_ITEM_CHANGED_REDUCE",
     checkListId: checkListId,
     checkListItem: checkListItem
   };
 }
 
+export function checkListHeaderChanged(checkListId, checkListItem) {
+  return {
+    type: "CHECKLIST_ITEM_CHANGED_REDUCE",
+    checkListId: checkListId,
+    checkListItem: checkListItem
+  };
+}
+
+  export function doSomething(text, num) {
+    return {
+      type: "DO_SOMETHING",
+      text,
+      num
+    };
+
+  }
